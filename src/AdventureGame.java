@@ -1,5 +1,5 @@
 import java.util.Scanner;
-import java.lang.Math;
+import java.lang.*;
 
 public class AdventureGame {
     public static void main(String[] args){
@@ -9,23 +9,101 @@ public class AdventureGame {
         System.out.println("Enter your name:");
         player = in.nextLine();
         player = player.trim();
-        int playerHealth = 100;
+        int playerHealth = 10;
 
         System.out.printf("Welcome %s, Let's start the adventure!%n", player);
 
         displayDemon();
 
         String enemy = "Demon";
-        int enemyHealth = 5;
+        int enemyHealth = 30;
 
         String enemy2 = "Another Demon";
-        int enemy2Health = 5;
+        int enemy2Health = 10;
 
         String enemy3 = "Third Demon";
-        int enemy3Health = 5;
+        int enemy3Health = 10;
 
         String lastEnemy = "Final Boss";
-        int lastEnemyHealth = 5;
+        int lastEnemyHealth = 10;
+
+        playerHealth = Fight(player, playerHealth, enemy, enemyHealth);
+
+        System.out.println("Player Health: " + playerHealth);
+
+        if(playerHealth <= 0){
+            System.exit(0);
+        }
+
+        System.out.println("Do you want to continue to the forest or the river path?");
+        String path = in.next();
+        path = path.trim();
+        path = path.toLowerCase();
+
+        if(path.equalsIgnoreCase("forest")){
+            displayDemon();
+
+            playerHealth = Fight(player, playerHealth, enemy2, enemy2Health);
+            System.out.println("Player Health: " + playerHealth);
+
+            if(playerHealth <= 0){
+                System.exit(0);
+            }
+
+            System.out.println("Do you want to climb the mountain or keep going into forest?");
+            String secondPath = in.next();
+            secondPath = secondPath.trim();
+            secondPath = secondPath.toLowerCase();
+
+            if(secondPath.equalsIgnoreCase("mountain")){
+                System.out.println("You chose the mountain path");
+
+            }
+
+        }else if(path.equalsIgnoreCase("river")){
+            System.out.println("you chose the river path");
+
+        }
+
+        displayDemon();
+
+        playerHealth = Fight(player, playerHealth, enemy3, enemy3Health);
+
+        if(playerHealth <= 0){
+            System.exit(0);
+        }
+
+        System.out.println("Do you want to continue the forest path or go the the lake?");
+        String lastPath = in.next();
+        lastPath = lastPath.trim();
+        lastPath = lastPath.toLowerCase();
+
+        if(lastPath.equalsIgnoreCase("lake")){
+            System.out.println("You chose the lake path");
+        }else if(lastPath.equalsIgnoreCase("forest")){
+            lastDemon();
+
+            playerHealth = Fight(player, playerHealth, lastEnemy, lastEnemyHealth);
+
+            if(playerHealth > 0){
+                System.out.println("" + " __ __ __    ________  ___   __    ___   __    ______   ______       \n" +
+                        "/_//_//_/\\  /_______/\\/__/\\ /__/\\ /__/\\ /__/\\ /_____/\\ /_____/\\      \n" +
+                        "\\:\\\\:\\\\:\\ \\ \\__.::._\\/\\::\\_\\\\  \\ \\\\::\\_\\\\  \\ \\\\::::_\\/_\\:::_ \\ \\     \n" +
+                        " \\:\\\\:\\\\:\\ \\   \\::\\ \\  \\:. `-\\  \\ \\\\:. `-\\  \\ \\\\:\\/___/\\\\:(_) ) )_   \n" +
+                        "  \\:\\\\:\\\\:\\ \\  _\\::\\ \\__\\:. _    \\ \\\\:. _    \\ \\\\::___\\/_\\: __ `\\ \\  \n" +
+                        "   \\:\\\\:\\\\:\\ \\/__\\::\\__/\\\\. \\`-\\  \\ \\\\. \\`-\\  \\ \\\\:\\____/\\\\ \\ `\\ \\ \\ \n" +
+                        "    \\_______\\/\\________\\/ \\__\\/ \\__\\/ \\__\\/ \\__\\/ \\_____\\/ \\_\\/ \\_\\/ \n" +
+                        "                                                                     " + "");
+                System.out.printf("Congratulations %s, looks like you defeated all demons....", player);
+
+            }else if(lastEnemyHealth > 0){
+                gameOver(lastEnemy);
+            }
+        }
+    }
+
+    public static int Fight(String player, int playerHealth, String enemy, int enemyHealth){
+        Scanner in = new Scanner(System.in);
 
         do{
             if(playerHealth <= 0){
@@ -44,6 +122,9 @@ public class AdventureGame {
                     attackSelection = 2;
                 }else if(selection.equalsIgnoreCase("superkick")){
                     attackSelection = 3;
+                }else {
+                    System.out.println("Not a choice for attack....");
+                    Fight(player, playerHealth, enemy, enemyHealth);
                 }
 
                 int yourAttack = playerAttack(attackSelection);
@@ -73,205 +154,12 @@ public class AdventureGame {
 
         if(playerHealth > 0){
             System.out.printf("%s has won the battle...%n", player);
+
         }else if(enemyHealth > 0){
             gameOver(enemy);
         }
 
-        System.out.println("Do you want to continue to the forest or the river path?");
-        String path = in.next();
-        path = path.trim();
-        path = path.toLowerCase();
-
-        if(path.equalsIgnoreCase("forest")){
-            displayDemon();
-
-            do{
-                if(playerHealth <= 0){
-                    break;
-                }else {
-                    System.out.println("Choose how to attack your opponent: (punch, kick, superkick)");
-                    String selection = in.next();
-                    selection = selection.trim();
-                    selection = selection.toLowerCase();
-                    System.out.println(selection);
-                    int attackSelection = 0;
-
-                    if(selection.equalsIgnoreCase("punch")){
-                        attackSelection = 1;
-                    }else if(selection.equalsIgnoreCase("kick")){
-                        attackSelection = 2;
-                    }else if(selection.equalsIgnoreCase("superkick")){
-                        attackSelection = 3;
-                    }
-
-                    int yourAttack = playerAttack(attackSelection);
-                    System.out.println(yourAttack);
-
-                    enemy2Health -= yourAttack;
-
-                    System.out.printf("You throw %d damage into your enemy.....%n", yourAttack);
-                    System.out.printf("%s has now %d of Health.....%n%n", enemy2, enemy2Health);
-                }
-
-                if(enemy2Health <= 0){
-                    break;
-                }else{
-
-                    int randomEnemyAttack = (int)(Math.random() * 3 - 1 + 1) + 1;
-                    int yourEnemyAttack = enemyAttack(randomEnemyAttack);
-
-                    playerHealth -= yourEnemyAttack;
-
-                    System.err.println("\nYour enemy is going to attack you now.....Prepare\n");
-                    System.err.printf("Your enemy throw %d damage to you.....%n", yourEnemyAttack);
-                    System.err.printf("%s has now %d of Health.....%n%n", player, playerHealth);
-                }
-
-            }while(playerHealth > 0 && enemy2Health > 0);
-
-            if(playerHealth > 0){
-                System.out.printf("%s has won the battle...%n", player);
-            }else if(enemy2Health > 0){
-                gameOver(enemy2);
-            }
-
-            System.out.println("Do you want to climb the mountain or keep going into forest?");
-            String secondPath = in.next();
-            secondPath = secondPath.trim();
-            secondPath = secondPath.toLowerCase();
-
-            if(secondPath.equalsIgnoreCase("mountain")){
-                System.out.println("You chose the mountain path");
-
-            }
-
-        }else if(path.equalsIgnoreCase("river")){
-            System.out.println("you chose the river path");
-
-        }
-
-        displayDemon();
-
-        do{
-            if(playerHealth <= 0){
-                break;
-            }else {
-                System.out.println("Choose how to attack your opponent: (punch, kick, superkick)");
-                String selection = in.next();
-                selection = selection.trim();
-                selection = selection.toLowerCase();
-                System.out.println(selection);
-                int attackSelection = 0;
-
-                if(selection.equalsIgnoreCase("punch")){
-                    attackSelection = 1;
-                }else if(selection.equalsIgnoreCase("kick")){
-                    attackSelection = 2;
-                }else if(selection.equalsIgnoreCase("superkick")){
-                    attackSelection = 3;
-                }
-
-                int yourAttack = playerAttack(attackSelection);
-                System.out.println(yourAttack);
-
-                enemy3Health -= yourAttack;
-
-                System.out.printf("You throw %d damage into your enemy.....%n", yourAttack);
-                System.out.printf("%s has now %d of Health.....%n%n", enemy3, enemy3Health);
-            }
-
-            if(enemy3Health <= 0){
-                break;
-            }else{
-
-                int randomEnemyAttack = (int)(Math.random() * 3 - 1 + 1) + 1;
-                int yourEnemyAttack = enemyAttack(randomEnemyAttack);
-
-                playerHealth -= yourEnemyAttack;
-
-                System.err.println("\nYour enemy is going to attack you now.....Prepare\n");
-                System.err.printf("Your enemy throw %d damage to you.....%n", yourEnemyAttack);
-                System.err.printf("%s has now %d of Health.....%n%n", player, playerHealth);
-            }
-
-        }while(playerHealth > 0 && enemy3Health > 0);
-
-        if(playerHealth > 0){
-            System.out.printf("%s has won the battle...%n", player);
-        }else if(enemy3Health > 0){
-            gameOver(enemy3);
-        }
-
-        System.out.println("Do you want to continue the forest path or go the the lake?");
-        String lastPath = in.next();
-        lastPath = lastPath.trim();
-        lastPath = lastPath.toLowerCase();
-
-        if(lastPath.equalsIgnoreCase("lake")){
-            System.out.println("You chose the lake path");
-        }else if(lastPath.equalsIgnoreCase("forest")){
-            lastDemon();
-
-            do{
-                if(playerHealth <= 0){
-                    break;
-                }else {
-                    System.out.println("Choose how to attack your opponent: (punch, kick, superkick)");
-                    String selection = in.next();
-                    selection = selection.trim();
-                    selection = selection.toLowerCase();
-                    System.out.println(selection);
-                    int attackSelection = 0;
-
-                    if(selection.equalsIgnoreCase("punch")){
-                        attackSelection = 1;
-                    }else if(selection.equalsIgnoreCase("kick")){
-                        attackSelection = 2;
-                    }else if(selection.equalsIgnoreCase("superkick")){
-                        attackSelection = 3;
-                    }
-
-                    int yourAttack = playerAttack(attackSelection);
-                    System.out.println(yourAttack);
-
-                    lastEnemyHealth -= yourAttack;
-
-                    System.out.printf("You throw %d damage into your enemy.....%n", yourAttack);
-                    System.out.printf("%s has now %d of Health.....%n%n", lastEnemy, lastEnemyHealth);
-                }
-
-                if(lastEnemyHealth <= 0){
-                    break;
-                }else{
-
-                    int randomEnemyAttack = (int)(Math.random() * 3 - 1 + 1) + 1;
-                    int yourEnemyAttack = enemyAttack(randomEnemyAttack);
-
-                    playerHealth -= yourEnemyAttack;
-
-                    System.err.println("\nYour enemy is going to attack you now.....Prepare\n");
-                    System.err.printf("Your enemy throw %d damage to you.....%n", yourEnemyAttack);
-                    System.err.printf("%s has now %d of Health.....%n%n", player, playerHealth);
-                }
-
-            }while(playerHealth > 0 && lastEnemyHealth > 0);
-
-            if(playerHealth > 0){
-                System.out.printf("%s has won the battle...%n%n", player);
-                System.out.println("" + " __ __ __    ________  ___   __    ___   __    ______   ______       \n" +
-                        "/_//_//_/\\  /_______/\\/__/\\ /__/\\ /__/\\ /__/\\ /_____/\\ /_____/\\      \n" +
-                        "\\:\\\\:\\\\:\\ \\ \\__.::._\\/\\::\\_\\\\  \\ \\\\::\\_\\\\  \\ \\\\::::_\\/_\\:::_ \\ \\     \n" +
-                        " \\:\\\\:\\\\:\\ \\   \\::\\ \\  \\:. `-\\  \\ \\\\:. `-\\  \\ \\\\:\\/___/\\\\:(_) ) )_   \n" +
-                        "  \\:\\\\:\\\\:\\ \\  _\\::\\ \\__\\:. _    \\ \\\\:. _    \\ \\\\::___\\/_\\: __ `\\ \\  \n" +
-                        "   \\:\\\\:\\\\:\\ \\/__\\::\\__/\\\\. \\`-\\  \\ \\\\. \\`-\\  \\ \\\\:\\____/\\\\ \\ `\\ \\ \\ \n" +
-                        "    \\_______\\/\\________\\/ \\__\\/ \\__\\/ \\__\\/ \\__\\/ \\_____\\/ \\_\\/ \\_\\/ \n" +
-                        "                                                                     " + "");
-                System.out.printf("Congratulations %s, looks like you defeated all demons....", player);
-
-            }else if(lastEnemyHealth > 0){
-                gameOver(lastEnemy);
-            }
-        }
+        return playerHealth;
     }
 
     public static int playerAttack(int attack){
